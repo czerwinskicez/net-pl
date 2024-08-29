@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to 23net</title>
+
+  <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
+
+  <script defer src="/__/firebase/10.13.0/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.13.0/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.13.0/firebase-database-compat.js"></script>
+  <script defer src="/__/firebase/10.13.0/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/10.13.0/firebase-functions-compat.js"></script>
+  <!-- <script defer src="/__/firebase/10.13.0/firebase-messaging-compat.js"></script> -->
+  <script defer src="/__/firebase/10.13.0/firebase-storage-compat.js"></script>
+  <script defer src="/__/firebase/10.13.0/firebase-analytics-compat.js"></script>
+  <!-- <script defer src="/__/firebase/10.13.0/firebase-remote-config-compat.js"></script> -->
+  <script defer src="/__/firebase/10.13.0/firebase-performance-compat.js"></script>
+
+  <script src="https://www.google.com/recaptcha/api.js?render=6Lf41S4qAAAAAC726mcBfPLBnb5sY8_dRxI78IgN" async
+    defer></script>
+
+  <script>
+    if (location.hostname == "127.0.0.1" || location.hostname == "localhost") {
+      const emulatorsScriptElement = document.createElement("script");
+      emulatorsScriptElement.defer = true;
+      emulatorsScriptElement.src = "/__/firebase/init.js?useEmulator=true";
+      document.head.appendChild(emulatorsScriptElement);
+    }
+
+    if (location.hash.length == 0) {
+      location.hash = "#/";
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <link rel="stylesheet" href="css/materialize-bundle.css">
+  <style>
+    :root {
+      --md-sys-color-primary: #b02044;
+      --md-sys-color-secondary: #2f3943;
+
+      --md-sys-color-surface-container: rgba(255, 255, 255, 0.8);
+    }
+
+    .container {
+      transition: 0.32s ease;
+    }
+    body:has(.admin-panel) {
+      account-bar .container,
+      main-container .container{
+        width: 96%;
+        max-width: 1600px;
+      }
+    }
+
+    .collapsible-header,
+    .collapsible-body {
+      background-color: var(--md-sys-color-surface-container);
+    }
+
+    body::selection {
+      background-color: --md-sys-color-primary;
+    }
+
+    .main-logo {
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      max-width: 100%;
+    }
+
+    *[context] {
+      display: none;
+      margin-top: 32px;
+    }
+
+    .loginbox md-filled-button,
+    .loginbox md-outlined-button {
+      width: 75%;
+      margin-bottom: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+    }
+
+    #login-modal md-filled-button,
+    #login-modal md-outlined-button {
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .close-login-modal {
+      cursor: pointer;
+    }
+
+    .close-login-modal:hover {
+      color: var(--md-sys-color-primary);
+    }
+
+    .registerbox {
+      margin-top: 20px;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100dvw;
+      height: 100dvh;
+      background-color: #9b6f7a;
+      background-image: url('');
+      background-repeat: no-repeat;
+      background-size: cover;
+      overflow: hidden;
+      z-index: -10;
+      top: 0;
+
+    }
+
+    .card-panel {
+      background-color: var(--md-sys-color-surface-container);
+    }
+
+    circular-preloader {
+      width: 100%;
+      display: block;
+      padding: 80px 0;
+      text-align: center;
+      transform: translateY(-20px);
+    }
+
+    .m-edit-icon {
+      font-size: 20px;
+    }
+
+    user-dropdown {
+      position: relative;
+    }
+  </style>
+
+
+  <script type="module" src="index.js"></script>
+  <script src="js/material-bundle.js"></script>
+</head>
+
+<body>
+  <div id="particles-js"></div>
+  <div id="login-modal" class="modal">
+    <div class="modal-content">
+      <login-password-window></login-password-window>
+    </div>
+  </div>
+
+  <div id="login" context="true">
+    <login-start></login-start>
+  </div>
+  <div id="main" context="true">
+    <account-bar></account-bar>
+    <main-container></main-container>
+  </div>
+
+  <template target="login-start">
+    <div class="container">
+      <div class="card-panel">
+        <div class="row">
+          <div class="col s12 m5">
+            <img src="img/logo.png" alt="23 logo" class="main-logo">
+          </div>
+          <div class="col s12 m7 loginbox">
+            <h4>23.net.pl</h4>
+            <p>Forum dyskusjne dla ludzi i robotów</p>
+            <md-filled-button class="google-login">Zaloguj przez Google (SSO)</md-filled-button>
+            <md-outlined-button class="password-login modal-trigger" href="#login-modal">Użyj hasła</md-outlined-button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </template>
+
+  <template target="login-password-window">
+    <div class="row">
+      <div class="col s12">
+        <h3 class="right close-login-modal">&times;</h3>
+        <h4>Logowanie przy użyciu hasła</h4>
+      </div>
+      <div class="col s12 m6 input-field">
+        <input type="email" class="validate" id="login-email-input">
+        <label for="login-email-input">E-mail</label>
+      </div>
+      <div class="col s12 m6 input-field">
+        <input type="password" id="password-input">
+        <label for="password-input">Hasło</label>
+      </div>
+      <div class="col s12">
+        <span class="login-email-msg"></span>
+      </div>
+      <div class="col s12 m6">
+        <md-filled-button class="login-email-submit captcha-verify">Zaloguj</md-filled-button>
+      </div>
+      <div class="col s12 m6">
+        <md-outlined-button class="remind-password captcha-verify">Zmień hasło</md-outlined-button>
+      </div>
+      <div class="col s12">
+        <h4 style="padding-top: 20px;">Rejestracja nowego użytkownika</h4>
+      </div>
+      <div class="col s12 input-field">
+        <input type="email" class="validate" id="register-email-input">
+        <label for="register-email-input">E-mail</label>
+        <span class="email-register-msg"></span>
+        <!-- <span class="helper-text" data-error="Niewłaściwy adres" data-success=""></span> -->
+      </div>
+      <div class="col s12 m6 input-field">
+        <input type="password" class="register-password">
+        <label for="register-password">Hasło</label>
+      </div>
+      <div class="col s12 m6 input-field">
+        <input type="password" class="register-password-confirm">
+        <label for="register-password-confirm">Potwierdź hasło</label>
+        <span class="confirm-password-msg"></span>
+      </div>
+      <div class="col s6 offset-s3">
+        <md-filled-button class="modal-register-button">Zarejestruj</md-filled-button>
+      </div>
+    </div>
+  </template>
+
+  <template target="account-bar">
+    <div class="container">
+      <div class="card-panel">
+        <div class="col s6">
+          <div class="right">
+            <user-dropdown></user-dropdown>
+          </div>
+        </div>
+        <div class="col s6">
+          <div>
+            <md-text-button load-context="start">
+              Start
+            </md-text-button>
+            <md-text-button load-context="admin_panel" required-permission="admin">Admin</md-text-button>
+            <md-text-button load-context="error__" required-permission="admin">Error</md-text-button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </template>
+
+  <template target="user-dropdown">
+    <md-text-button class="logut-dropdown-button">
+      <div class="material-symbols-outlined m-edit-icon" slot="icon">person</div>
+      <span value-type="email"></span>
+    </md-text-button>
+    <md-menu class="logout-dropdown">
+      <md-menu-item class="edit-profile-button">Edytuj profil</md-menu-item>
+      <md-menu-item class="logout-button">Wyloguj</md-menu-item>
+    </md-menu>
+    <script>
+      document.addEventListener("DOMContentLoaded", _ => {
+        document.querySelectorAll("user-dropdown:not(.listener-added)").forEach(userDropdownElement => {
+          const anchorElement = userDropdownElement.querySelector("md-text-button");
+          const menuElement = userDropdownElement.querySelector("md-menu");
+
+          menuElement.anchorElement = anchorElement;
+          menuElement.anchorCorner = Corner.START_END;
+          menuElement.menuCorner = Corner.END_END;
+
+          anchorElement.addEventListener("click", _ => {
+            menuElement.open = !menuElement.open;
+          });
+
+          userDropdownElement.classList.add("listener-added");
+        });
+        // document.querySelectorAll(".logut-dropdown-button:not(.listener-added)").forEach(openLogoutDropdownButton=>{
+        //   openLogoutDropdownButton.classList.add("listener-added");
+        //   openLogoutDropdownButton.addEventListener("click", _e=>{
+        //     const logoutMenu = openLogoutDropdownButton.nextElementSibling;
+        //     logoutMenu.anchorElement = openLogoutDropdownButton;
+        //     if (logoutMenu && logoutMenu.classList.contains("logout-dropdown")) {
+        //       logoutMenu.open = !logoutMenu.open;
+        //     }
+        //   });
+        // });
+      });
+    </script>
+  </template>
+
+  <template target="main-container">
+    <div class="container">
+      <div class="card-panel">
+        <main-content><circular-preloader></circular-preloader></main-content>
+      </div>
+    </div>
+  </template>
+
+  <template target="circular-preloader">
+    <div class="preloader-wrapper big active">
+      <div class="spinner-layer">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template name="admin">
+    <div class="admin-panel">
+
+      <h3>Admin Panel</h3>
+      <ul class="collapsible">
+        <li>
+          <div class="collapsible-header"><i class="material-icons">group</i>Przeglądaj użytkowników</div>
+          <div class="collapsible-body">
+            <table class="highlight">
+              <thead>
+                <tr>
+                  <th>Imię</th>
+                  <th>Email</th>
+                  <th>Akcje</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Jan Kowalski</td>
+                  <td>jan.kowalski@example.com</td>
+                  <td>
+                    <a class="btn-small" href="#">Edytuj</a>
+                    <a class="btn-small red" href="#">Usuń</a>
+                  </td>
+                </tr>
+                <!-- Dodaj więcej użytkowników tutaj -->
+              </tbody>
+            </table>
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header"><i class="material-icons">precision_manufacturing</i>Przeglądaj boty</div>
+          <div class="collapsible-body">
+            boty
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header"><i class="material-icons">subject</i>Zarządzaj tematami</div>
+          <div class="collapsible-body">
+            zarządzaj tematami i pokojami
+          </div>
+        </li>
+      </ul>
+    </div>
+  </template>
+  <!-- scripts --->
+
+  <script src="js/materialize/bin/materialize.min.js"></script>
+  <script>
+
+    // materialize and material initializations
+    document.addEventListener("DOMContentLoaded", _ => {
+      const modalElems = document.querySelectorAll(".modal");
+      const modalInstances = M.Modal.init(modalElems, {});
+
+      document.querySelectorAll(".close-login-modal").forEach(closeLoginModalButton => {
+        closeLoginModalButton.addEventListener("click", _ => {
+          document.querySelector("#login-modal").M_Modal.close();
+        });
+      });
+
+      const tooltipElems = document.querySelectorAll(".tooltipped");
+      const tooltipInstances = M.Tooltip.init(tooltipElems, {});
+
+    });
+  </script>
+  <script>
+    // const _23_STORE = {
+    //   authResult: JSON.parse(window.localStorage.getItem("auth_result")) || null
+    // };
+
+    const emailRegexPattern = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9-]+\.)+[a-z]{2,}$/;
+
+    const ServerAction = (action, payload = {}) => {
+      return new Promise((resolve, reject) => {
+        if (location.hostname == "localhost" || location.hostname == "127.0.0.1") {
+          window.firebaseFunctionsHostname = "http://localhost:5001/net-pl/europe-central2/"
+        } else {
+          window.firebaseFunctionsHostname = "https://europe-central2-net-pl.cloudfunctions.net/"
+        }
+
+        const userActionURL = firebaseFunctionsHostname + "userAction";
+
+        if (firebase.auth().currentUser) {
+          firebase.auth().currentUser.getIdToken().then(idToken => {
+            fetch(userActionURL, {
+              method: "POST",
+              headers: {
+                "Authorization": "Bearer " + idToken
+              },
+              method: "no-cors",
+              body: JSON.stringify({
+                "action": action,
+                "payload": payload,
+              }),
+            }).then(response => {
+              return response.json();
+            }).then(responseData => {
+              // console.log("ServerAction_responseData: ", responseData);
+              // if (responseData.operationType == "signIn") {
+              //   ServerAction("login", {
+              //     userInfo: responseData.additionalUserInfo.profile
+              //   });
+              // }
+              resolve(responseData);
+            }).catch(err => {
+              console.error("ServerAction_error: ", err);
+              reject(err);
+            });
+          });
+        }
+      });
+    };
+
+    const printContext = (payload) => {
+      console.log("printContext: ", payload);
+
+      if (payload.contextError && payload.contextError.length > 0) {
+        console.error("contextError: ", payload);
+        let errorMsg = "Request error (" + payload.contextError + ")";
+
+        M.toast({ html: errorMsg });
+      } else {
+        document.querySelectorAll("main-content").forEach(mainContentElement => {
+          mainContentElement.innerHTML = JSON.stringify(payload);
+
+          console.log(payload.contextData);
+          if (payload.contextData && payload.contextData.contextName == "admin") {
+            document.querySelectorAll("main-content").forEach(mainContentElement => {
+              console.log(mainContentElement);
+              // mainContentElement.innerHTML = "";
+              mainContentElement.appendChild(document.querySelector("template[name='admin']").content.cloneNode(true));
+
+              setTimeout(_ => {
+                const collapsibleElems = document.querySelectorAll('.collapsible');
+                const collapsibleInstances = M.Collapsible.init(collapsibleElems);
+              }, 1);
+            });
+          }
+        });
+      }
+    };
+
+    // SuccessfullAuth seems to be the same as SuccessfullLogin but triggers only once on login and the other each time authenticated user reload
+    const SuccessfullAuth = (userAuthResult) => {
+      console.info("SuccessfullAuth: ", userAuthResult);
+      window.sessionStorage.setItem("print_login_message", "true");
+      location.reload();
+      // window.localStorage.setItem("auth_result", JSON.stringify(userAuthResult));
+      // _23_STORE.authResult = userAuthResult;
+    };
+
+    const showContext = (contextId) => {
+      document.querySelectorAll("[context]").forEach(ctxToHide => {
+        ctxToHide.style.display = "none";
+      });
+      const contextSelector = "#" + contextId;
+      document.querySelector(contextSelector).style.display = "block";
+    };
+
+    const showAdminControls = () => {
+      document.querySelectorAll("[required-permission='admin']").forEach(adminControl => {
+        // console.log("adminControl");
+        adminControl.style.display = adminControl.initialDisplay;
+      });
+    };
+
+    const SuccessfullLogin = () => {
+      const mainElementSelector = showContext("main");
+      const mainElement = document.querySelector(mainElementSelector);
+
+      if (firebase.auth() && firebase.auth().currentUser) {
+        document.querySelectorAll("[value-type='email']").forEach(emailElement => {
+          emailElement.innerHTML = firebase.auth().currentUser.email + "&nbsp;&#9660;";
+        });
+
+        // mainElement.innerHTML = "";
+        ServerAction("getContext", {
+          "contextId": "start",
+        }).then(response => {
+          if (window.sessionStorage.getItem("print_login_message")) {
+            M.toast({ html: "Zalogowano pomyślnie" });
+            window.sessionStorage.removeItem("print_login_message");
+          }
+
+          console.log(response);
+          if (response.userPermissions && response.userPermissions.includes("admin")) {
+            showAdminControls();
+          }
+          printContext("Ok", response.contextData);
+        }).catch(error => {
+          console.error(error);
+          M.toast({ html: "Błąd logowania" });
+        });
+
+      }
+    };
+
+
+    document.addEventListener("DOMContentLoaded", _ => {
+      const firebaseConfig = {
+        apiKey: "AIzaSyC5GUgQY0QojuSxRyi89pHD292vDVogHwQ",
+        authDomain: "net-pl.firebaseapp.com",
+        databaseURL: "https://net-pl-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "net-pl",
+        storageBucket: "net-pl.appspot.com",
+        messagingSenderId: "597417406904",
+        appId: "1:597417406904:web:bf3cca94780fb037b59f4d",
+        measurementId: "G-21LMWYZ66T"
+      };
+
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      const provider = new firebase.auth.GoogleAuthProvider();
+
+      // login with google sso
+      document.querySelectorAll(".google-login").forEach(googleLoginButton => {
+        googleLoginButton.addEventListener("click", _e => {
+          auth.signInWithPopup(provider).then(result => {
+            console.log("authresult: ", result);
+            showContext("main");
+            if (result.operationType == "signIn") {
+              ServerAction("login", {
+                // userData: result.additionalUserInfo.profile
+                authResult: result,
+              });
+              SuccessfullAuth(result);
+            }
+          });
+        });
+      });
+
+      // logout from firebase euth
+      document.querySelectorAll(".logout-button").forEach(logoutButton => {
+        logoutButton.addEventListener("click", _ => {
+          firebase.auth().signOut().then(_=>{
+            window.sessionStorage.setItem("print_logout_message", "true");
+            location.reload();
+          }).catch(err=>{
+            console.error(err);
+            M.toast({ html: "Logout error" });
+          });
+        });
+      });
+
+      // test query to backend
+      // document.querySelectorAll(".admin-button").forEach(testButton => {
+      //   testButton.addEventListener("click", _ => {
+      //     ServerAction("getContext", {
+      //       "contextId": "admin_panel",
+      //     }).then(serverResponse=>{
+      //       // console.log("adminContext: ", serverResponse);
+      //       printContext(serverResponse);
+      //     }).catch(err=>console.error(err));
+      //   });
+      // });
+
+      const loadAndPrintContext = (context) => {
+        ServerAction("getContext", {
+          "contextId": context,
+        }).then(serverResponse => {
+          printContext(serverResponse);
+        }).catch(err => console.error(err));
+      };
+
+      document.querySelectorAll("[load-context]:not(.load-context-listener-added)").forEach(loadContextButton => {
+        loadContextButton.classList.add("load-context-listener-added");
+        loadContextButton.addEventListener("click", event => {
+          loadAndPrintContext(loadContextButton.getAttribute("load-context"));
+        });
+      });
+
+
+      const enteredEmail = document.querySelector("#login-email-input");
+      const enteredPassword = document.querySelector("#password-input");
+
+      // remind forgotten password
+      document.querySelectorAll(".remind-password").forEach(remindPasswordButton => {
+        remindPasswordButton.addEventListener("click", _ => {
+          if (emailRegexPattern.test(enteredEmail.value) && enteredEmail.value.length > 2) {
+            firebase.auth().sendPasswordResetEmail(enteredEmail.value).then(_ => {
+              console.debug("password reset email sent");
+              document.querySelectorAll(".login-email-msg").forEach(loginEmailMsgElement => {
+                loginEmailMsgElement.style.color = "green";
+                loginEmailMsgElement.textContent = "Wysłano zapytanie na wskazany adres e-mail";
+              });
+            });
+          } else {
+            document.querySelectorAll(".login-email-msg").forEach(loginEmailMsgElement => {
+              loginEmailMsgElement.style.color = "red";
+              loginEmailMsgElement.textContent = "Nieprawidłowy adres email";
+            });
+          }
+        });
+      });
+
+      // login user with a given password
+      document.querySelectorAll(".login-email-submit").forEach(loginEmailButton => {
+        loginEmailButton.addEventListener("click", _ => {
+          firebase.auth().signInWithEmailAndPassword(enteredEmail.value, enteredPassword.value).then(result => {
+            // console.log(result);
+            // console.log(result.additionalUserInfo.profile);
+            document.querySelector("#login-modal").M_Modal.close();
+            showContext("main");
+
+            ServerAction("login", {
+              authResult: result,
+            });
+
+            SuccessfullAuth(result);
+          }).catch(err => {
+            if (err.code == "auth/invalid-credential" || err.code == "auth/missing-password") {
+              emailMsgElement.style.color = "red";
+              emailMsgElement.textContent = "Nieprawidłowa nazwa użytkownika lub hasło"
+            }
+            console.error(err);
+          });
+        });
+      });
+
+      // register user with email and password
+      document.querySelectorAll(".modal-register-button").forEach(registerButton => {
+        registerButton.addEventListener("click", _ => {
+          const registerEmail = document.querySelector("#register-email-input").value;
+          const registerPassword = document.querySelector(".register-password");
+          const registerPasswordConfirm = document.querySelector(".register-password-confirm");
+          const registerPasswordMsgElement = document.querySelector(".confirm-password-msg");
+
+          registerPasswordMsgElement.textContent = "";
+          let isPasswordOk = false;
+
+          if (registerPassword.value.length < 6) {
+            registerPasswordMsgElement.textContent += "Hasło zbyt krótkie. ";
+            registerPasswordMsgElement.style.color = 'red';
+
+            registerPassword.classList.add("invalid");
+            registerPasswordConfirm.classList.add("invalid");
+            isPasswordOk = false;
+          } else if (registerPassword.value != registerPasswordConfirm.value) {
+            registerPasswordMsgElement.textContent += "Hasła nie są takie same.";
+            registerPasswordMsgElement.style.color = 'red';
+
+            registerPassword.classList.add("invalid");
+            registerPasswordConfirm.classList.add("invalid");
+            isPasswordOk = false;
+          } else {
+            registerPasswordMsgElement.textContent = '';
+            isPasswordOk = true;
+
+
+            registerPassword.classList.remove("invalid");
+            registerPasswordConfirm.classList.remove("invalid");
+
+            registerPassword.classList.add("valid");
+            registerPasswordConfirm.classList.add("valid");
+          }
+
+
+          let isEmailOk = false;
+          const registerEmailInputElement = document.querySelector("#register-email-input");
+          const emailMsgElement = document.querySelector(".email-register-msg");
+
+          if (registerEmailInputElement &&
+            registerEmailInputElement.validity &&
+            registerEmailInputElement.validity.valid &&
+            registerEmailInputElement.value.length > 2 &&
+            emailRegexPattern.test(registerEmailInputElement.value)) {
+
+            emailMsgElement.textContent = "";
+
+            registerEmailInputElement.classList.remove("invalid");
+            registerEmailInputElement.classList.add("valid");
+
+            isEmailOk = true;
+          } else {
+            emailMsgElement.style.color = "red";
+            emailMsgElement.textContent = "Nieprawidłowy email";
+
+            registerEmailInputElement.classList.add("invalid");
+
+            isEmailOk = false;
+          }
+
+          if (isPasswordOk && isEmailOk) {
+            const validatedEmail = registerEmailInputElement.value;
+            const validatedPassword = registerPassword.value;
+
+            console.log("Email, pass", validatedEmail, validatedPassword);
+
+            firebase.auth().createUserWithEmailAndPassword(validatedEmail, validatedPassword).then(userCredential => {
+              // console.log("userCredential", userCredential);
+              ServerAction("login", {
+                authResult: result,
+              });
+            }).catch(err => {
+              // console.log(Object(err));
+              if (err.code == "auth/email-already-in-use") {
+                emailMsgElement.style.color = "red";
+                emailMsgElement.textContent = "Znaleziono użytkownika o podanym adresie email. Proszę użyć innego adresu, zmienić hasło lub zalogować się przez SSO.";
+
+                registerEmailInputElement.classList.add("invalid");
+              }
+            });
+          }
+
+
+        });
+      });
+
+      firebase.auth().onAuthStateChanged(_ => {
+        if (firebase.auth() && firebase.auth().currentUser) {
+          SuccessfullLogin();
+        }
+        if (!firebase.auth().currentUser) {
+          showContext("login");
+        };
+
+        // const showMainOnLoginInverval = setInterval(_=>{
+        //   // console.log("firebase.auth().currentUser", firebase.auth().currentUser)
+        //   console.log(firebase.auth());
+        //   if(firebase.auth() && firebase.auth().currentUser){
+        //     showContext("main");
+        //     clearInterval(showMainOnLoginInverval);
+        //   } 
+        //   if (!firebase.auth().currentUser) {
+        //     showContext("login");
+        //   };
+        // }, 10);
+
+
+        // document.querySelectorAll(".captcha-verify").forEach(verifyCaptchaTriggerElement=>{
+        //   verifyCaptchaTriggerElement.addEventListener("click", e=>{
+        //     e.preventDefault();
+        //     grecaptcha.ready(async () => {
+        //       grecaptcha.execute('6Lf41S4qAAAAAC726mcBfPLBnb5sY8_dRxI78IgN', {action: 'LOGIN'}).then(recaptchaToken=>{
+        //         console.log(recaptchaToken);
+        //         ServerAction("recaptcha", {
+        //           token: recaptchaToken
+        //         });
+        //       });
+        //     });
+        //   });
+        // });
+      });
+    });
+  </script>
+  <script src="./js/particles.js"></script>
+  <script src="./js/particles-config.js"></script>
+  <script>
+    particlesJS('particles-js', particlesJS_config);
+  </script>
+
+  <script>
+    // document.querySelectorAll("account-bar").forEach(accountBarElement=>{
+    //   accountBarElement.appendChild(document.querySelector("template.account-bar").content.cloneNode(true));
+    // });
+
+    document.querySelectorAll("template").forEach(template => {
+      const targetElementName = template.getAttribute("target");
+      document.querySelectorAll(targetElementName).forEach(targetElement => {
+        targetElement.appendChild(template.content.cloneNode(true));
+      });
+    });
+
+    document.querySelectorAll("[required-permission='admin']").forEach(adminControl => {
+      // console.log(adminControl);
+      adminControl.initialDisplay = String(adminControl.style.display);
+      adminControl.style.display = "none";
+
+    });
+
+    if (window.sessionStorage.getItem("print_logout_message")) {
+      M.toast({ html: "Wylogowano pomyślnie" });
+      window.sessionStorage.removeItem("print_logout_message");
+    }
+  </script>
+</body>
+
+</html>

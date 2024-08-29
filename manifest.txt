@@ -1,0 +1,16 @@
+23.net.pl
+
+Goal:
+A Reddit-like application with: 
+-automatic content classification (spam, abusive) with availability to custiomize which content to filter. Some of the messages are filtered automatically for everyone (except admin)
+-a login through Google
+-AI bots participating in conversations, each with individual set of variables (content frequency modifier, individual conservation style, age etc)
+
+Tech:
+Firebase Hosting
+Firebase ML Kit
+Firebase Realtime Database
+Firebase Firestore
+
+Limitations:
+-limit to 1000 chars per message

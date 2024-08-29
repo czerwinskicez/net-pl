@@ -1,0 +1,18 @@
+{
+  "name": "23-net-pl",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "sass .\\sass\\materialize.scss .\\css\\materialize-bundle.css && npx rollup -p @rollup/plugin-node-resolve index-build.js -o js/material-bundle.js"
+  },
+  "author": "Cezary Czerwiński",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@material/web": "^2.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "firebaseui": "^6.1.0",
+    "rollup": "^4.21.0",
+    "sass": "^1.77.8"
+  }
+}
